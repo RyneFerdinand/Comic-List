@@ -1,0 +1,19 @@
+.main-carousel {
+    width: 100%;
+}
+
+.manga-section{
+    width: 90%;
+    margin: 0 auto;
+    padding: 3em 0;
+}
+
+.manhwa-section{
+    width: 90%;
+    margin: 0 auto;
+    padding: 0em 0 3em 0;
+}
+
+.comic-carousel {
+    margin: 4em 0;
+}
