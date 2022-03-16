@@ -3,17 +3,37 @@
 }
 
 .manga-section{
-    width: 90%;
+    width: 80%;
     margin: 0 auto;
     padding: 3em 0;
 }
 
 .manhwa-section{
-    width: 90%;
+    width: 80%;
     margin: 0 auto;
     padding: 0em 0 3em 0;
 }
 
 .comic-carousel {
     margin: 4em 0;
+}
+
+.loading-background{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    background-color: var(--black);
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em;
+}
+
+
+.loading-background img{
+    height: 5rem;
+}
+
+.loading-background h1{
+    color: var(--white);
 }

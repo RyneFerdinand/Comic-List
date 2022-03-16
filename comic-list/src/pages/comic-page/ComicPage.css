@@ -1,0 +1,38 @@
+#comic-page{
+    padding: 10em 0;
+    min-height: 80vh;
+}
+.search-bar{
+    margin: 0 auto;
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, .25);
+    border-radius: 10px;
+    width: 80%;
+    padding: .5em 1%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar__bar{
+    border: none;
+    font-size: 1.5rem;
+    width: 95%;
+}
+
+.search-bar__bar:focus{
+    outline: none;
+}
+
+.search-bar__icon{
+    font-size: 1.5rem;
+}
+
+.result-section{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 3% 2%;
+    width: 80%;
+    justify-items: center;
+    margin: 4em auto;
+}

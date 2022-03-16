@@ -1,1 +1,13 @@
-GET https://api.jikan.moe/v4/manga?order_by=popularity&limit=10
+GET https://api.myanimelist.net/v2/manga/ranking?ranking_type=all&limit=4
+Content-Type: application/json
+
+{
+    "headers": {
+        "X-MAL-CLIENT-ID": "722cb17f4af40fe6a4c4bd088d133c5c"
+    }
+}
+
+###
+
+GET https://kitsu.io/api/edge/trending/manga?[mangaType]=manhwa
+Content-Type:application/vnd.api+json

@@ -49,6 +49,23 @@ h5 {
   font-size: 1.24rem;
 }
 
+.flex-row{
+  display: flex;
+  gap: 5%;
+  flex-direction: row;
+}
+
+.flex-col{
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.space-between{
+  justify-content: space-between;
+  align-items: center;
+}
+
 .section-title {
   text-align: left;
   border-left: 0.5rem solid var(--orange);

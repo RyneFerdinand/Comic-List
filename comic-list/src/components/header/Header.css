@@ -11,6 +11,12 @@ header{
     z-index: 100;
 }
 
+header:hover{
+    border-bottom: none;
+    background-color: var(--black);
+    transition: all .15s ease-in;
+}
+
 .scrolled-nav{
     border-bottom: none;
     background-color: var(--black);

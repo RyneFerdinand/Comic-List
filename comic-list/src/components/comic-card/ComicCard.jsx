@@ -1,16 +1,20 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./ComicCard.css";
+import "../../Context/FavoriteProvider";
+import { useUpdateFavorites } from "../../Context/FavoriteProvider";
 
 export default function ComicCard(props) {
-  const [favorite, setFavorite] = useState(() => false);
+  const [favorite, setFavorite] = useState(() => props.favorite);
+
+  let updatefavoriteList = useUpdateFavorites();
 
   const toggleFavorite = () => {
+    updatefavoriteList(props.comic, !favorite);
     setFavorite((prevFavorite) => !prevFavorite);
   };
 
-  return (
+  return !props.skeleton ? (
     <div className="comic-card">
       <Link to={`/comic/${props.comic.mal_id}`}>
         <img
@@ -33,6 +37,12 @@ export default function ComicCard(props) {
       </span>
 
       <h5 className="comic-card__title">{props.comic.title}</h5>
+    </div>
+  ) : (
+    <div className="skeleton">
+      <div className="skeleton__image"></div>
+      <div className="skeleton__title"></div>
+      <div className="skeleton__title"></div>
     </div>
   );
 }

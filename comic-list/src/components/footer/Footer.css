@@ -18,4 +18,5 @@ footer {
 .copyright{
     font-weight: 300;
     color: var(--white);
+    text-align: center;
 }

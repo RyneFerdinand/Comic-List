@@ -18,7 +18,7 @@
     color: var(--white);
 }
 
-.add-button {
+.more-button {
     background-color: var(--orange);
     border: 1px solid var(--orange);
     color: var(--white);
