@@ -1,0 +1,9 @@
+GET http://localhost:8080/comic/home
+
+###
+
+GET http://localhost:8080/comic/search?q=one
+    
+###
+
+GET http://localhost:8080/comic/116778
