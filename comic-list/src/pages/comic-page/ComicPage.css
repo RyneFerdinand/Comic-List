@@ -1,6 +1,5 @@
 #comic-page{
-    padding: 10em 0;
-    min-height: 80vh;
+    padding: 10em 0 5em 0;
 }
 .search-bar{
     margin: 0 auto;
@@ -31,8 +30,12 @@
 .result-section{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    gap: 3% 2%;
+    gap: 3em 1em;
     width: 80%;
     justify-items: center;
     margin: 4em auto;
+}
+
+.no-data-header{
+    grid-column: span 6;
 }

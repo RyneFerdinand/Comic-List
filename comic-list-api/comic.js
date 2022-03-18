@@ -31,7 +31,7 @@ const processData = (data, type) => {
       const newData = {
         id: manga.node.id,
         title: manga.node.title,
-        cover: manga.node.main_picture.medium,
+        poster: manga.node.main_picture.medium,
       };
       processedData.data.push(newData);
     });
@@ -41,7 +41,7 @@ const processData = (data, type) => {
       const newData = {
         id: manga.mal_id,
         title: manga.title,
-        cover: manga.images.webp.large_image_url,
+        poster: manga.images.webp.large_image_url,
       };
       processedData.data.push(newData);
     });
@@ -80,55 +80,65 @@ const processData = (data, type) => {
 };
 
 router.get("/home", async (req, res) => {
-  const manhwaURL = `${MAL_API_URL}/manga/ranking?ranking_type=manhwa&limit=10&fields=id,title,main_picture,paging`;
-  const mangaURL = `${MAL_API_URL}/manga/ranking?ranking_type=manhwa&limit=10&fields=id,title,main_picture,paging`;
+  const mangaURL = `${MAL_API_URL}/manga/ranking?ranking_type=manga&limit=10&fields=id,title,main_picture,paging&nsfw=true`;
+  const manhwaURL = `${MAL_API_URL}/manga/ranking?ranking_type=manhwa&limit=10&fields=id,title,main_picture,paging&nsfw=true`;
+  let dataReceived = false;
+  while (!dataReceived) {
+    try {
+      const mangaData = await axios.get(mangaURL, header);
+      const manhwaData = await axios.get(manhwaURL, header);
 
-  try {
-    const mangaData = await axios.get(mangaURL, header);
-    const manhwaData = await axios.get(manhwaURL, header);
+      const homeData = {
+        carousel: carouselItems,
+        manga: processData(mangaData, MAL_CARD),
+        manhwa: processData(manhwaData, MAL_CARD),
+      };
 
-    const homeData = {
-      carousel: carouselItems,
-      manga: processData(mangaData, MAL_CARD),
-      manhwa: processData(manhwaData, MAL_CARD),
-    };
-
-    res.json(homeData);
-  } catch (error) {
-    res.json(error);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      dataReceived = true;
+      res.json(homeData);
+    } catch (error) {}
   }
 });
 
 router.get("/search", async (req, res) => {
-  if (req.query.q) {
-    try {
-      const searchURL = `${JIKAN_API_URL}/manga?q=${req.query.q}&order_by=score&sort=desc&sfw=True&limit=24&page=1`;
-      const searchData = await axios.get(searchURL);
-
-      res.json(processData(searchData, JIKAN_CARD));
-    } catch (error) {
-      res.json(error);
+  if (req.query.q && req.query.page) {
+    let dataReceived = false;
+    while (!dataReceived) {
+      try {
+        const searchURL = `${JIKAN_API_URL}/manga?q=${req.query.q}&order_by=score&sort=desc&sfw=True&limit=24&page=${req.query.page}&genres_exclude=12`;
+        const searchData = await axios.get(searchURL);
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        dataReceived = true;
+        res.json(processData(searchData, JIKAN_CARD));
+      } catch (error) {}
     }
   } else {
-    res.json({ message: "No Query Inserted !" });
+    res.status(400).json({ message: "No Query Inserted !" });
   }
 });
 
 router.get("/:id", async (req, res) => {
   if (req.params.id) {
-    const detailURL = `${MAL_API_URL}/manga/${req.params.id}?fields=id,title,main_picture,synopsis,genres,recommendations`;
-    const characterURL = `${JIKAN_API_URL}/manga/${req.params.id}/characters`;
+    let dataReceived = false;
+    while (!dataReceived) {
+      try {
+        const detailURL = `${MAL_API_URL}/manga/${req.params.id}?fields=id,title,main_picture,synopsis,genres,recommendations`;
+        const characterURL = `${JIKAN_API_URL}/manga/${req.params.id}/characters`;
 
-    const detailData = await axios.get(detailURL, header);
-    const characterData = await axios.get(characterURL);
-    const data = {
-      detail: detailData.data,
-      character: characterData.data.data,
-    };
-
-    res.json(processData(data, DETAIL));
+        const detailData = await axios.get(detailURL, header);
+        const characterData = await axios.get(characterURL);
+        const data = {
+          detail: detailData.data,
+          character: characterData.data.data,
+        };
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        dataReceived = true;
+        res.json(processData(data, DETAIL));
+      } catch (error) {}
+    }
   } else {
-    res.json({ message: "id not given !" });
+    res.status(400).json({ message: "id not given !" });
   }
 });
 

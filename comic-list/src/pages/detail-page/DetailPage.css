@@ -20,8 +20,8 @@
 
 .detail-section__poster {
   min-width: 15rem;
-  width: 150%;
-  height: 22rem;
+  width: 25%;
+  min-height: 22rem;
   object-fit: cover;
   border-radius: 10px;
   background-color: hsl(200, 20%, 95%);
@@ -31,6 +31,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4em;
+}
+
+.main-data{
+  min-width: 70%;
 }
 
 .genre {
@@ -74,9 +78,10 @@
   border-radius: 3px;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1200px) {
   .detail-section__poster {
-    width: 50%;
+    width: 40%;
+    
   }
 
   .detail-flex-row {
@@ -85,6 +90,11 @@
 
   .detail-section__genres {
     justify-content: center;
+  }
+
+  .detail-section__title {
+    text-align: center;
+    margin-top: 1em;
   }
 
   .add-button {

@@ -42,14 +42,13 @@ export default function FavoriteProvider({ children }) {
       let data = localStorage.getItem("favorites");
       if(data !== null){
         data = JSON.parse(data);
-        data = data.filter(comic => comic.mal_id !== newComic.mal_id)
+        data = data.filter(comic => comic.id !== newComic.id)
         localStorage.setItem("favorites", JSON.stringify(data))
-
       }
       
       setFavoriteComic((prevFavoriteComic) => {
         return prevFavoriteComic.filter(
-          (comic) => comic.mal_id !== newComic.mal_id
+          (comic) => comic.id !== newComic.id
         );
       });
     }
@@ -58,7 +57,7 @@ export default function FavoriteProvider({ children }) {
   const checkFavorites = (id) => {
     let inList = false;
     favoriteComic.forEach((comic) => {
-      if (comic.mal_id === id) {
+      if (comic.id === id) {
         inList = true;
       }
     });

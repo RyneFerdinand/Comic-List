@@ -10,61 +10,41 @@ import { useCheckFavorites } from "../../Context/FavoriteProvider";
 import ReactLoading from "react-loading";
 
 export default function HomePage() {
-  const [topManga, setTopManga] = useState(() => []);
-  const [topManhwa, setTopManhwa] = useState(() => []);
-  const [request, setRequest] = useState(false);
+  const [homeData, setHomeData] = useState(() => null);
 
   const checkFavorite = useCheckFavorites();
 
-  const getManga = async (isMounted) => {
+  const getHomeData = async (isMounted) => {
     try {
       const data = await axios.get(
-        "https://api.jikan.moe/v4/manga?order_by=score&limit=10&sfw=true&sort=desc&type=manga"
+        "http://localhost:8000/comic/home"
       );
 
       if (isMounted) {
-        setTopManga(data.data.data);
-      }
-      setRequest(false);
-    } catch (error) {
-      setRequest(true);
-    }
-  };
-
-  const getManhwa = async (isMounted) => {
-    try {
-      const data = await axios.get(
-        "https://api.jikan.moe/v4/manga?order_by=score&limit=10&sfw=true&sort=desc&type=manhwa"
-      );
-      setRequest(false);
-      if (isMounted) {
-        setTopManhwa(data.data.data);
+        setHomeData(data.data);
       }
     } catch (error) {
-      setRequest(true);
     }
   };
 
   useEffect(() => {
     let isMounted = true;
-    getManga(isMounted);
-    getManhwa(isMounted);
+    getHomeData(isMounted);
     return () => {
       isMounted = false;
     };
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
+  // useEffect(() => {
+  //   let isMounted = true;
 
-    if (request) {
-      getManga(isMounted);
-      getManhwa(isMounted);
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [request]);
+  //   if (request) {
+  //     getManga(isMounted);
+  //   }
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [request]);
 
   const responsive = {
     desktop: {
@@ -100,40 +80,7 @@ export default function HomePage() {
     },
   };
 
-  const carouselItems = [
-    {
-      carouselId: 116778,
-      image: "https://images4.alphacoders.com/112/thumb-1920-1126211.jpg",
-      title: "Chainsaw Man",
-    },
-    {
-      carouselId: 121496,
-      image: "https://images7.alphacoders.com/105/thumb-1920-1054068.png",
-      title: "Solo Leveling",
-    },
-    {
-      carouselId: 113138,
-      image: "https://wallpapercave.com/wp/wp8921149.jpg",
-      title: "Jujutsu Kaisen",
-    },
-    {
-      carouselId: 132214,
-      image: "https://wallpapercave.com/wp/wp9079448.jpg",
-      title: "Omniscent Reader's Viewpoint",
-    },
-    {
-      carouselId: 96792,
-      image: "https://wallpaperaccess.com/full/1099445.png",
-      title: "Demon Slayer",
-    },
-    {
-      carouselId: 122663,
-      image: "https://xenodude.files.wordpress.com/2020/07/tower-of-god.png",
-      title: "Tower of God",
-    },
-  ];
-
-  return topManga.length > 0 && topManhwa.length > 0 ? (
+  return homeData ? (
     <div id="home-page">
       <Carousel
         responsive={responsive}
@@ -145,7 +92,7 @@ export default function HomePage() {
         autoPlaySpeed={3000}
         transitionDuration={500}
       >
-        {carouselItems.map((item) => {
+        {homeData.carousel?.map((item) => {
           return (
             <CarouselItem
               key={item.carouselId}
@@ -164,11 +111,11 @@ export default function HomePage() {
           autoPlay={false}
           className="comic-carousel"
         >
-          {topManga?.map((comic) => (
+          {homeData.manga.data?.map((comic) => (
             <ComicCard
-              key={comic.mal_id}
+              key={comic.id}
               comic={comic}
-              favorite={checkFavorite(comic.mal_id)}
+              favorite={checkFavorite(comic.id)}
             />
           ))}
         </Carousel>
@@ -182,12 +129,12 @@ export default function HomePage() {
           autoPlay={false}
           className="comic-carousel"
         >
-          {topManhwa?.map((comic) => {
+          {homeData.manhwa.data?.map((comic) => {
             return (
               <ComicCard
-                key={comic.mal_id}
+                key={comic.id}
                 comic={comic}
-                favorite={checkFavorite(comic.mal_id)}
+                favorite={checkFavorite(comic.id)}
               />
             );
           })}

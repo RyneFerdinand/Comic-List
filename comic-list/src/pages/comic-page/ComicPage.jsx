@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useRef, useCallback, useState } from "react";
 import ComicCard from "../../components/comic-card/ComicCard";
 import { useCheckFavorites } from "../../Context/FavoriteProvider";
+import UseComicSearch from "../../hooks/UseComicSearch";
 import "./ComicPage.css";
 export default function ComicPage() {
-  const [comicQuery, setComicQuery] = useState(() => []);
-  const [timeOutFunction, setTimeOutFunction] = useState(() => null);
   const [query, setQuery] = useState(() => "");
+  const [page, setPage] = useState(1);
   const [skeletons, setSkeletons] = useState(() => {
     let data = [];
     for (let index = 0; index < 12; index++) {
@@ -16,37 +16,27 @@ export default function ComicPage() {
     return data;
   });
 
+  const { comicQuery, loading, nextPage, noData } = UseComicSearch(query, page);
+
   const checkFavorite = useCheckFavorites();
 
-  const queryComic = (isMounted) => {
-    if (timeOutFunction) {
-      clearTimeout(timeOutFunction);
-    }
-    if (query.length > 0) {
-      setTimeOutFunction(
-        setTimeout(async () => {
-          try {
-            const data = await axios.get(
-              `https://api.jikan.moe/v4/manga?q=${query}&order_by=score&sort=desc&sfw=True&limit=24`
-            );
-            if (isMounted) {
-              setComicQuery(data.data.data);
-            }
-          } catch (error) {}
-        }, 500)
-      );
-    } else {
-      setComicQuery([]);
-    }
-  };
+  const observer = useRef();
 
-  useEffect(() => {
-    let isMounted = true;
-    queryComic(isMounted);
-    return () => {
-      isMounted = false;
-    };
-  }, [query]);
+  const lastComicElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && nextPage) {
+          setPage((prevPageNumber) => prevPageNumber + 1);
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, nextPage]
+  );
+
   return (
     <div id="comic-page">
       <div className="search-bar">
@@ -55,6 +45,7 @@ export default function ComicPage() {
           className="search-bar__bar"
           placeholder="Search for Comics..."
           onChange={(q) => {
+            setPage(1);
             setQuery(q.target.value);
           }}
         />
@@ -64,16 +55,30 @@ export default function ComicPage() {
         />
       </div>
       <div className="result-section">
-        {query.length > 0 ?
-        comicQuery.length > 0
-          ? comicQuery.map((comic) => (
+        {comicQuery?.map((comic, idx) => {
+          if (idx + 1 === comicQuery.length) {
+            return (
+              <span ref={lastComicElementRef} key={comic.id}>
+                <ComicCard
+                  key={comic.id}
+                  comic={comic}
+                  favorite={checkFavorite(comic.id)}
+                />
+              </span>
+            );
+          } else {
+            return (
               <ComicCard
-                key={comic.mal_id}
+                key={comic.id}
                 comic={comic}
-                favorite={checkFavorite(comic.mal_id)}
+                favorite={checkFavorite(comic.id)}
               />
-            ))
-          : skeletons.map((id) => <ComicCard key={id} skeleton={true} />): <></>}
+            );
+          }
+        })}
+        {loading &&
+          skeletons?.map((id) => <ComicCard key={id} skeleton={true} />)}
+        {noData && <h4 className="no-data-header">\(￣︶￣"\))  Sorry, I can't seem to find the comic...</h4>}
       </div>
     </div>
   );

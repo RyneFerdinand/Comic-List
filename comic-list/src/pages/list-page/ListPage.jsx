@@ -28,21 +28,21 @@ export default function ListPage() {
         />
       </div>
       <div className="result-section">
-        {comicList.map((comic) => {
+        {comicList?.map((comic) => {
           if (query.trim().length === 0) {
             return (
               <ComicCard
-                key={comic.mal_id}
+                key={comic.id}
                 comic={comic}
-                favorite={checkFavorite(comic.mal_id)}
+                favorite={checkFavorite(comic.id)}
               />
             );
           } else if (comic.title.toLowerCase().includes(query.trim())) {
             return (
               <ComicCard
-                key={comic.mal_id}
+                key={comic.id}
                 comic={comic}
-                favorite={checkFavorite(comic.mal_id)}
+                favorite={checkFavorite(comic.id)}
               />
             );
           }

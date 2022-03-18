@@ -9,6 +9,7 @@ import {
   useUpdateFavorites,
 } from "../../Context/FavoriteProvider";
 import "./DetailPage.css";
+
 export default function DetailPage() {
   const checkFavorite = useCheckFavorites();
   const updateFavorite = useUpdateFavorites();
@@ -20,46 +21,17 @@ export default function DetailPage() {
     return data;
   });
   const [comicData, setComicData] = useState(null);
-  const [request, setRequest] = useState(false);
   const [favorite, setFavorite] = useState(() => false);
 
   const { id } = useParams();
   const getComicData = async (isMounted) => {
     try {
-      let data, characterData, recommendationData;
-
-      data = await axios.get(`https://api.jikan.moe/v4/manga/${id}`);
-      setTimeout(async () => {
-        try {
-          characterData = await axios.get(
-            `https://api.jikan.moe/v4/manga/${id}/characters`
-          );
-          setTimeout(async () => {
-            try {
-              recommendationData = await axios.get(
-                `https://api.jikan.moe/v4/manga/${id}/recommendations`
-              );
-              const comic = {
-                ...data.data.data,
-                characters: characterData.data.data,
-                recommendation: recommendationData.data.data,
-              };
-              if (isMounted) {
-                setComicData(comic);
-                setFavorite(checkFavorite(comic.mal_id));
-                setRequest(false);
-              }
-            } catch (error) {
-              setRequest(true);
-            }
-          }, 50);
-        } catch (error) {
-          setRequest(true);
-        }
-      }, 50);
-    } catch (error) {
-      setRequest(true);
-    }
+      const data = await axios.get(`http://localhost:8000/comic/${id}`);
+      if (isMounted) {
+        setComicData(data.data);
+        setFavorite(checkFavorite(data.data.id));
+      }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -70,18 +42,6 @@ export default function DetailPage() {
       isMounted = false;
     };
   }, [id]);
-
-  useEffect(() => {
-    console.log("masuk");
-    let isMounted = true;
-
-    if (request) {
-      getComicData(isMounted);
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [request]);
 
   const itemResponsive = {
     desktop: {
@@ -110,25 +70,28 @@ export default function DetailPage() {
     updateFavorite(comicData, !favorite);
     setFavorite((prevFavorite) => !prevFavorite);
   };
+
   return comicData ? (
     <div id="detail-page">
       <div className="detail-section">
         <div className="detail-flex-row space-between">
           <img
-            src={comicData.images.webp.large_image_url}
+            src={comicData.poster}
             alt=""
             className="detail-section__poster"
           />
-          <div className="detail-flex-col">
+          <div className="detail-flex-col main-data">
             <div className="detail-flex-row space-between">
               <h1 className="detail-section__title">{comicData.title}</h1>
               <button className="add-button" onClick={clickUpdateFavorite}>
-                {favorite ? "Remove from List" : "Add to List"}
+                {checkFavorite(comicData.id)
+                  ? "Remove from List"
+                  : "Add to List"}
               </button>
             </div>
             <span className="detail-section__genres">
-              {comicData.genres.map((genre, idx) => (
-                <span key={genre.mal_id} className="genre">
+              {comicData.genres?.map((genre) => (
+                <span key={genre.id} className="genre">
                   {genre.name}
                 </span>
               ))}
@@ -149,10 +112,7 @@ export default function DetailPage() {
             className="comic-carousel"
           >
             {comicData.characters?.map((character) => (
-              <CharacterCard
-                key={character.character.mal_id}
-                character={character}
-              />
+              <CharacterCard key={character.id} character={character} />
             ))}
           </Carousel>
         ) : (
@@ -162,21 +122,25 @@ export default function DetailPage() {
 
       <div className="recommendation-section">
         <h2 className="section-title">Recommendation</h2>
-        <Carousel
-          responsive={itemResponsive}
-          swipeable={true}
-          draggable={false}
-          autoPlay={false}
-          className="comic-carousel"
-        >
-          {comicData.recommendation?.map((recommendation) => (
-            <ComicCard
-              key={recommendation.entry.mal_id}
-              comic={recommendation.entry}
-              favorite={checkFavorite(recommendation.entry.mal_id)}
-            />
-          ))}
-        </Carousel>
+        {comicData.recommendations ? (
+          <Carousel
+            responsive={itemResponsive}
+            swipeable={true}
+            draggable={false}
+            autoPlay={false}
+            className="comic-carousel"
+          >
+            {comicData.recommendations?.map((recommendation) => (
+              <ComicCard
+                key={recommendation.id}
+                comic={recommendation}
+                favorite={checkFavorite(recommendation.id)}
+              />
+            ))}
+          </Carousel>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   ) : (
@@ -206,7 +170,7 @@ export default function DetailPage() {
           autoPlay={false}
           className="comic-carousel"
         >
-          {skeletons.map((id) => (
+          {skeletons?.map((id) => (
             <ComicCard key={id} skeleton={true} />
           ))}
         </Carousel>

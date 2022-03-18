@@ -16,12 +16,8 @@ export default function ComicCard(props) {
 
   return !props.skeleton ? (
     <div className="comic-card">
-      <Link to={`/comic/${props.comic.mal_id}`}>
-        <img
-          src={props.comic.images.webp.large_image_url}
-          alt=""
-          className="comic-card__image"
-        />
+      <Link to={`/comic/${props.comic.id}`}>
+        <img src={props.comic.poster} alt="" className="comic-card__image" />
       </Link>
       <span className="comic-card__heart" onClick={toggleFavorite}>
         <svg
