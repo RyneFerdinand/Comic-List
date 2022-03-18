@@ -7,3 +7,6 @@ GET http://localhost:8080/comic/search?q=one
 ###
 
 GET http://localhost:8080/comic/116778
+
+###
+GET https://comic-list-api.herokuapp.com/comic/home
