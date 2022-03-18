@@ -26,7 +26,7 @@ export default function DetailPage() {
   const { id } = useParams();
   const getComicData = async (isMounted) => {
     try {
-      const data = await axios.get(`http://localhost:8000/comic/${id}`);
+      const data = await axios.get(`https://comic-list-api.herokuapp.com/comic/${id}`);
       if (isMounted) {
         setComicData(data.data);
         setFavorite(checkFavorite(data.data.id));

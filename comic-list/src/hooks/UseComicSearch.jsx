@@ -14,8 +14,8 @@ export default function UseComicSearch(query, page) {
     if (isMounted) {
       setComicQuery([]);
       setNoData(false);
-      if(query.length === 0){
-        setLoading(false);  
+      if (query.length === 0) {
+        setLoading(false);
       }
     }
     return () => {
@@ -35,7 +35,7 @@ export default function UseComicSearch(query, page) {
         setTimeout(async () => {
           try {
             const data = await axios.get(
-              `http://localhost:8000/comic/search?q=${query}&page=${page}`
+              `https://comic-list-api.herokuapp.com/comic/search?q=${query}&page=${page}`
             );
             if (isMounted) {
               setNextPage(data.data.pagination.has_next_page);
@@ -50,8 +50,7 @@ export default function UseComicSearch(query, page) {
               }
               setLoading(false);
             }
-          } catch (error) {
-          }
+          } catch (error) {}
         }, 500)
       );
     }

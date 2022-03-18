@@ -17,7 +17,7 @@ export default function HomePage() {
   const getHomeData = async (isMounted) => {
     try {
       const data = await axios.get(
-        "http://localhost:8000/comic/home"
+        "https://comic-list-api.herokuapp.com/comic/home"
       );
 
       if (isMounted) {
