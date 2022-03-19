@@ -34,18 +34,7 @@ export default function HomePage() {
       isMounted = false;
     };
   }, []);
-
-  // useEffect(() => {
-  //   let isMounted = true;
-
-  //   if (request) {
-  //     getManga(isMounted);
-  //   }
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [request]);
-
+  
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 769 },
