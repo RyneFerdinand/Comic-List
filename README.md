@@ -3,8 +3,8 @@ Comic List
 Comic List is a simple website that lets the user add and remove their favorite comics. The webite uses React.JS as its front-end and Express.JS for the back-end.
 
 Links:
-[Website Link](https://comic-list.netlify.app/)
-[API Link](https://comic-list-api.herokuapp.com/)
+* [Website Link](https://comic-list.netlify.app/)
+* [API Link](https://comic-list-api.herokuapp.com/)
 
 APIs used:
 * [MyAnimeList API](https://myanimelist.net/apiconfig/references/api/v2): https://api.myanimelist.net/v2
