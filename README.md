@@ -1,6 +1,6 @@
 Comic List
 ==========
-Comic List is a simple website that lets the user add and remove their favorite comics. The webite uses React.JS as its front-end and Express.JS for the back-end.
+Comic List is a website that lets the user view information regarding comics and add them to their favorites. The webite uses React.JS as its front-end and Express.JS for the back-end.
 
 Links:
 * [Website Link](https://comic-list.netlify.app/)
